@@ -1,5 +1,5 @@
 Fixes #
-Changes proposed i this pull requrest:
+Changes proposed in this pull request:
 -
 -
 -
