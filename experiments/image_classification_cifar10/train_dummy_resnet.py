@@ -7,7 +7,7 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from models.dummynet import DummyResNet
-from training.BasicTraining import BasicTraining
+from training.basic_training import BasicTraining
 
 def perform_experiment():
     """
@@ -49,9 +49,9 @@ def perform_experiment():
                    , optim.SGD(dummy_resnet.parameters(), lr=0.01)
                    , 32
                    , device
-                   , lossDisplayBatch=10000 // trainloader.batch_size
-                   , tensorboardxLossDisplayBatch=10
-                   , accuracyDisplayBatch=10000 // trainloader.batch_size)
+                   , loss_display_interval=10000 // trainloader.batch_size
+                   , tensorboardx_loss_display_interval=10
+                   , accuracy_display_batch=10000 // trainloader.batch_size)
     training.eval(dummy_resnet, testloader, device)
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ from torch import optim
 import torchvision
 import torchvision.transforms as transforms
 from models.dummynet import DummyCNN
-from training.BasicTraining import BasicTraining
+from training.basic_training import BasicTraining
 
 def perform_experiment():
     """
@@ -49,9 +49,9 @@ def perform_experiment():
                    , optim.SGD(dummy_cnn.parameters(), lr=0.01)
                    , 4
                    , device
-                   , lossDisplayBatch=2000
-                   , tensorboardxLossDisplayBatch=10
-                   , accuracyDisplayBatch=2000)
+                   , loss_display_interval=2000
+                   , tensorboardx_loss_display_interval=10
+                   , accuracy_display_batch=2000)
     training.eval(dummy_cnn, testloader, device)
 
 if __name__ == "__main__":
