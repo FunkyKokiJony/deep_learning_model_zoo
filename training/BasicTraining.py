@@ -1,5 +1,5 @@
-from utils.LossMonitor import LossMonitor
-from utils.AccuracyMonitor import AccuracyMonitor
+from utils.loss_monitor import LossMonitor
+from utils.accuracy_monitor import AccuracyMonitor
 import torch
 
 class BasicTraining:
@@ -8,10 +8,10 @@ class BasicTraining:
         self.accuracyMonitor = AccuracyMonitor()
 
     def train(self, model, trainloader, criterion, optimizer, epochs, device, lossDisplayBatch=1000, tensorboardxLossDisplayBatch=10, accuracyDisplayBatch=5000):
-        self.lossMonitor.commandLineLossInit()
-        self.lossMonitor.tensorboardxLossInit(type(model).__name__)
-        self.accuracyMonitor.commandLineAccuracyInit()
-        self.accuracyMonitor.tensorboardxAccuracyInit(type(model).__name__)
+        self.lossMonitor.commandline_loss_init()
+        self.lossMonitor.tensorboardx_loss_init(type(model).__name__)
+        self.accuracyMonitor.commandline_accuracy_init()
+        self.accuracyMonitor.tensorboardx_accuracy_init(type(model).__name__)
 
         for epoch in range(epochs):
             for idx, data in enumerate(trainloader):
@@ -23,24 +23,24 @@ class BasicTraining:
                 loss.backward()
                 optimizer.step()
 
-                self.lossMonitor.commandLineLossMonitor(epoch, idx, loss.item(), trainloader, lossDisplayBatch)
-                self.lossMonitor.tensorboardxLossMonitor(epoch, idx, loss.item(), trainloader, tensorboardxLossDisplayBatch)
+                self.lossMonitor.commandline_loss_monitor(epoch, idx, loss.item(), trainloader, lossDisplayBatch)
+                self.lossMonitor.tensorboardx_loss_monitor(epoch, idx, loss.item(), trainloader, tensorboardxLossDisplayBatch)
                 #Since .data is for Variable to underlying tensor which has been deprecated
                 #max(outputs, 1) will return the max value at first and their indices at the second variable
                 _, predicted = torch.max(outputs, 1)
-                self.accuracyMonitor.commandLineAccuracyMonitor(labels, predicted
-                                                                , tracking_mode=True, epoch=epoch
-                                                                , idx=idx, dataloader=trainloader
-                                                                , batch=accuracyDisplayBatch)
-                self.accuracyMonitor.tensorboardxAccuracyMonitor(labels, predicted
-                                                                , tracking_mode=True, epoch=epoch
-                                                                , idx=idx, dataloader=trainloader
-                                                                , batch=accuracyDisplayBatch)
+                self.accuracyMonitor.commandline_accuracy_monitor(labels, predicted
+                                                                  , tracking_mode=True, epoch=epoch
+                                                                  , idx=idx, dataloader=trainloader
+                                                                  , interval=accuracyDisplayBatch)
+                self.accuracyMonitor.tensorboardx_accuracy_monitor(labels, predicted
+                                                                   , tracking_mode=True, epoch=epoch
+                                                                   , idx=idx, dataloader=trainloader
+                                                                   , interval=accuracyDisplayBatch)
 
 
     def eval(self, model, testloader, device):
-        self.accuracyMonitor.commandLineAccuracyInit()
-        self.accuracyMonitor.tensorboardxAccuracyInit(type(model).__name__)
+        self.accuracyMonitor.commandline_accuracy_init()
+        self.accuracyMonitor.tensorboardx_accuracy_init(type(model).__name__)
 
         with torch.no_grad():
             for data in testloader:
@@ -48,8 +48,8 @@ class BasicTraining:
                 model.eval()
                 outputs = model.forward(inputs)
                 _, predicted = torch.max(outputs.data, 1)
-                self.accuracyMonitor.commandLineAccuracyMonitor(labels, predicted)
-                self.accuracyMonitor.tensorboardxAccuracyMonitor(labels, predicted)
+                self.accuracyMonitor.commandline_accuracy_monitor(labels, predicted)
+                self.accuracyMonitor.tensorboardx_accuracy_monitor(labels, predicted)
 
-        self.accuracyMonitor.commandLineAccuracyMonitor(display=True)
-        self.accuracyMonitor.tensorboardxAccuracyMonitor(display=True)
+        self.accuracyMonitor.commandline_accuracy_monitor(display=True)
+        self.accuracyMonitor.tensorboardx_accuracy_monitor(display=True)

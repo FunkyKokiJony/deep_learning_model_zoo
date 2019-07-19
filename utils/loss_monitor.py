@@ -26,7 +26,8 @@ class LossMonitor:
         self.totalCommandLine += 1
         if idx % batch == batch - 1 or display:
             niter = epoch * len(dataloader) + idx
-            print("[{:d}, {:d}] loss: {:.3f}".format(epoch, idx, self.runningLossCommandLine/self.totalCommandLine))
+            print("[{:d}, {:d}] loss: {:.3f}".format(
+                epoch, idx, self.runningLossCommandLine/self.totalCommandLine))
             self.runningLossCommandLine = 0
             self.totalCommandLine = 0
 
@@ -35,8 +36,8 @@ class LossMonitor:
         self.totalTensorBoard += 1
         if idx % batch == batch - 1 or display:
             niter = epoch * len(dataloader) + idx
-            self.writer.add_scalar(self.tensorboardxName + "_Loss", self.runningLossTensorBoard/self.totalTensorBoard, niter)
+            self.writer.add_scalar(self.tensorboardxName + "_Loss"
+                                   , self.runningLossTensorBoard/self.totalTensorBoard, niter)
             self.runningLossTensorBoard = 0
             self.totalTensorBoard = 0
             self.writer.flush()
-
