@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-from models.dummynet import DummyResNet
+from models.dummynet import dummy_resnet
 from training.basic_training import BasicTraining
 
 def perform_experiment():
@@ -41,18 +41,18 @@ def perform_experiment():
     testloader = torch.utils.data.DataLoader(testset, batch_size=4, shuffle=False, num_workers=2)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    dummy_resnet = DummyResNet.DummyResNet().to(device)
+    resnet = dummy_resnet.DummyResNet().to(device)
     training = BasicTraining()
-    training.train(dummy_resnet
+    training.train(resnet
                    , trainloader
                    , nn.CrossEntropyLoss()
-                   , optim.SGD(dummy_resnet.parameters(), lr=0.01)
+                   , optim.SGD(resnet.parameters(), lr=0.01)
                    , 32
                    , device
                    , loss_display_interval=10000 // trainloader.batch_size
                    , tensorboardx_loss_display_interval=10
                    , accuracy_display_batch=10000 // trainloader.batch_size)
-    training.eval(dummy_resnet, testloader, device)
+    training.eval(resnet, testloader, device)
 
 if __name__ == "__main__":
     perform_experiment()

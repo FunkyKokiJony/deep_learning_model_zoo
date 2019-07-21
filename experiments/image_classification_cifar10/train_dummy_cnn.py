@@ -6,7 +6,7 @@ from torch import nn
 from torch import optim
 import torchvision
 import torchvision.transforms as transforms
-from models.dummynet import DummyCNN
+from models.dummynet import dummy_cnn
 from training.basic_training import BasicTraining
 
 def perform_experiment():
@@ -41,18 +41,18 @@ def perform_experiment():
     testloader = torch.utils.data.DataLoader(testset, batch_size=4, shuffle=False, num_workers=2)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    dummy_cnn = DummyCNN.DummyCNN().to(device)
+    cnn = dummy_cnn.DummyCNN().to(device)
     training = BasicTraining()
-    training.train(dummy_cnn
+    training.train(cnn
                    , trainloader
                    , nn.CrossEntropyLoss()
-                   , optim.SGD(dummy_cnn.parameters(), lr=0.01)
+                   , optim.SGD(cnn.parameters(), lr=0.01)
                    , 4
                    , device
                    , loss_display_interval=2000
                    , tensorboardx_loss_display_interval=10
                    , accuracy_display_batch=2000)
-    training.eval(dummy_cnn, testloader, device)
+    training.eval(cnn, testloader, device)
 
 if __name__ == "__main__":
     perform_experiment()
