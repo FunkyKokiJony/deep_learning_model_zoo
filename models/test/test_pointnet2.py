@@ -32,6 +32,11 @@ def test_pointnetcls_forward():
     loss = criterion(output, target)
     loss.backward()
     optimizer.step()
+    del net
+    del inputs
+    del target
+    del output
+    torch.cuda.empty_cache()
 
 def test_pointnetcls_with_checkpoint_best():
     """
@@ -52,6 +57,11 @@ def test_pointnetcls_with_checkpoint_best():
     loss = criterion(output, target)
     loss.backward()
     optimizer.step()
+    del net
+    del inputs
+    del target
+    del output
+    torch.cuda.empty_cache()
 
 def test_pointnetcls_with_checkpoint_200():
     """
@@ -72,3 +82,8 @@ def test_pointnetcls_with_checkpoint_200():
     loss = criterion(output, target)
     loss.backward()
     optimizer.step()
+    del net
+    del inputs
+    del target
+    del output
+    torch.cuda.empty_cache()
