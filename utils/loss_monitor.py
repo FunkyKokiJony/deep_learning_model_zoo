@@ -2,14 +2,16 @@
 This module is for using command ling and tensorboardx to track loss
 """
 import time
-from configuration import settings
-from tensorboardX import SummaryWriter
+
+from torch.utils.tensorboard import SummaryWriter
+
+from configuration import constants
 
 class LossMonitor:
     """
     This class is for using command ling and tensorboardx to track loss
     """
-    __LOG_ADDR = settings.RESOURCES_ADDR + '/log/'
+    __LOG_ADDR = constants.RESOURCES_ADDR + '/log/'
 
     def __init__(self):
         self.runningloss_commandline = 0

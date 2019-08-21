@@ -3,14 +3,15 @@ This module is for using command ling and tensorboardx to track accuracy
 """
 import time
 import torch
-from configuration import settings
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
+
+from configuration import constants
 
 class AccuracyMonitor:
     """
     This class is for use command ling and tensorboardx to track accuracy
     """
-    __LOG_ADDR = settings.RESOURCES_ADDR + '/log/'
+    __LOG_ADDR = constants.RESOURCES_ADDR + '/log/'
 
     def __init__(self):
         self.correct_commandline = 0
