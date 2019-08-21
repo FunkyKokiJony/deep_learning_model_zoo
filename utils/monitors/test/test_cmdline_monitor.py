@@ -4,7 +4,7 @@
 import pytest
 import torch
 
-from configuration.settings import AccuracyStats, LossStats, MonitorMode
+from configuration.constants import AccuracyStats, LossStats, MonitorMode
 from utils.monitors.callbacks.accuracy_callback import AccuracyCallback
 from utils.monitors.callbacks.loss_callback import LossCallback
 from utils.monitors.cmdline_monitor import CmdLineMonitor
@@ -42,8 +42,8 @@ def test_cmdline_motnior_with_callbacks(training_stats1, training_stats2):
 
     monitor.update(MonitorMode.EVAL, 1, training_stats2)
 
-    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.TRACK] == "{:.4f}%".format(6 / 8)
-    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.EVAL] == "{:.4f}%".format(1.0)
+    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.TRACK] == "{:.4f}".format(6 / 8)
+    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.EVAL] == "{:.4f}".format(1.0)
     assert monitor.tracking_stats[loss.get_name()][MonitorMode.TRACK] == "{:.4f}".format(0.5)
     assert monitor.tracking_stats[loss.get_name()][MonitorMode.EVAL] == "{:.4f}".format(0.0)
 
