@@ -1,7 +1,7 @@
 """
 
 """
-from configuration.settings import AccuracyStats, MonitorMode
+from configuration.constants import AccuracyStats, MonitorMode
 from utils.monitors.callbacks.stats_callback import StatsCallback
 import logging
 
@@ -27,8 +27,8 @@ class AccuracyCallback(StatsCallback):
         elif mode == MonitorMode.EVAL:
             _correct = (_predicts == _labels).sum().item()
             _total = _labels.size(0)
-            monitor.add_stats(idx, self.get_name(), MonitorMode.TRACK, "{:.4f}%".format(self.correct / self.total))
-            monitor.add_stats(idx, self.get_name(), MonitorMode.EVAL, "{:.4f}%".format(_correct / _total))
+            monitor.add_stats(idx, self.get_name(), MonitorMode.TRACK, "{:.4f}".format(self.correct / self.total))
+            monitor.add_stats(idx, self.get_name(), MonitorMode.EVAL, "{:.4f}".format(_correct / _total))
             self.correct = 0
             self.total = 0
         else:

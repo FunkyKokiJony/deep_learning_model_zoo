@@ -3,7 +3,7 @@
 """
 import logging
 
-from configuration.settings import LossStats, MonitorMode
+from configuration.constants import LossStats, MonitorMode
 from utils.monitors.callbacks.stats_callback import StatsCallback
 
 
