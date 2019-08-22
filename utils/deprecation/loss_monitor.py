@@ -47,10 +47,10 @@ class LossMonitor:
         """
         1. Method for display loss on the command line
         2. It will output average loss every [interval] times
-        :param epoch: current epoch in training
+        :param epoch: current epoch in trainer
         :param idx: current idx in current epoch
-        :param loss: the loss numeric value in this training batch
-        :param dataloader: the dataloader we used in training
+        :param loss: the loss numeric value in this trainer batch
+        :param dataloader: the dataloader we used in trainer
         :param interval: loss display interval
         :param display: boolean determine if display loss using accumulate statistics
         """

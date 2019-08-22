@@ -1,6 +1,7 @@
 """
 
 """
+import logging
 import pytest
 import torch
 from mock import Mock
@@ -29,13 +30,6 @@ def training_stats2():
     return stats_dict
 
 def test_tensorboard_monitor_with_callbacks(monkeypatch, training_stats1, training_stats2):
-    monitor = TensorboardMonitor("mock")
-    accuracy = AccuracyCallback()
-    loss = LossCallback()
-
-    monitor.add_callbacks(accuracy)
-    monitor.add_callbacks(loss)
-
     mock_writer = Mock()
     mock_writer.scalar_name = []
     mock_writer.scalar_val = []
@@ -44,34 +38,44 @@ def test_tensorboard_monitor_with_callbacks(monkeypatch, training_stats1, traini
     def mock_init(self, dir):
         mock_writer.dir = dir
 
+    monkeypatch.setattr(SummaryWriter, "__init__", mock_init)
+    monitor = TensorboardMonitor("mock")
+    monkeypatch.setattr(monitor, "writer", mock_writer)
+    print(mock_writer.dir)
+    accuracy = AccuracyCallback()
+    loss = LossCallback()
+
+    monitor.add_callbacks(accuracy)
+    monitor.add_callbacks(loss)
+
+
+
+
     def mock_add_scalar(name, val, idx):
         mock_writer.scalar_name.append(name)
         mock_writer.scalar_val.append(val)
         mock_writer.scalar_idx.append(idx)
 
-    monkeypatch.setattr(SummaryWriter, "__init__", mock_init)
     monkeypatch.setattr(mock_writer, "add_scalar", mock_add_scalar)
 
-    with monitor:
-        monkeypatch.setattr(monitor, "writer", mock_writer)
-        monitor.update(MonitorMode.TRACK, 0, training_stats1)
-        monitor.update(MonitorMode.EVAL, 1, training_stats2)
+    monitor.update(MonitorMode.TRACK, 0, training_stats1)
+    monitor.update(MonitorMode.EVAL, 1, training_stats2)
 
-        assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.TRACK]["idx"] == 1
-        assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.TRACK]["val"] == "{:.4f}".format(0.75)
-        assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.EVAL]["idx"] == 1
-        assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.EVAL]["val"] == "{:.4f}".format(1.0)
+    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.TRACK]["idx"] == 1
+    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.TRACK]["val"] == "{:.4f}".format(0.75)
+    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.EVAL]["idx"] == 1
+    assert monitor.tracking_stats[accuracy.get_name()][MonitorMode.EVAL]["val"] == "{:.4f}".format(1.0)
 
-        assert monitor.tracking_stats[loss.get_name()][MonitorMode.TRACK]["idx"] == 1
-        assert monitor.tracking_stats[loss.get_name()][MonitorMode.TRACK]["val"] == "{:.4f}".format(0.5)
-        assert monitor.tracking_stats[loss.get_name()][MonitorMode.EVAL]["idx"] == 1
-        assert monitor.tracking_stats[loss.get_name()][MonitorMode.EVAL]["val"] == "{:.4f}".format(0.0)
+    assert monitor.tracking_stats[loss.get_name()][MonitorMode.TRACK]["idx"] == 1
+    assert monitor.tracking_stats[loss.get_name()][MonitorMode.TRACK]["val"] == "{:.4f}".format(0.5)
+    assert monitor.tracking_stats[loss.get_name()][MonitorMode.EVAL]["idx"] == 1
+    assert monitor.tracking_stats[loss.get_name()][MonitorMode.EVAL]["val"] == "{:.4f}".format(0.0)
 
-        monitor.display()
+    monitor.display()
 
-        assert mock_writer.scalar_name == ['_'.join(["mock", accuracy.get_name(), MonitorMode.TRACK]),
+    assert mock_writer.scalar_name == ['_'.join(["mock", accuracy.get_name(), MonitorMode.TRACK]),
                                            '_'.join(["mock", accuracy.get_name(), MonitorMode.EVAL]),
                                            '_'.join(["mock", loss.get_name(), MonitorMode.TRACK]),
                                            '_'.join(["mock", loss.get_name(), MonitorMode.EVAL])]
-        assert mock_writer.scalar_val == [0.75, 1.0, 0.5, 0.0]
-        assert mock_writer.scalar_idx == [1, 1, 1, 1]
+    assert mock_writer.scalar_val == [0.75, 1.0, 0.5, 0.0]
+    assert mock_writer.scalar_idx == [1, 1, 1, 1]

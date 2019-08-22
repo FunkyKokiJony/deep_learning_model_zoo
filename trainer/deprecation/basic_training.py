@@ -1,13 +1,13 @@
 """
-This module is for the training and evaluation of basic image classification with tracking loss
+This module is for the trainer and evaluation of basic image classification with tracking loss
 """
 import torch
-from utils.loss_monitor import LossMonitor
-from utils.accuracy_monitor import AccuracyMonitor
+from utils.deprecation.loss_monitor import LossMonitor
+from utils.deprecation.accuracy_monitor import AccuracyMonitor
 
 class BasicTraining:
     """
-    This class is for the training and evaluation of image classification procedure
+    This class is for the trainer and evaluation of image classification procedure
     """
     def __init__(self):
         self.loss_monitor = LossMonitor()
@@ -18,14 +18,14 @@ class BasicTraining:
               , tensorboardx_loss_display_interval=10
               , accuracy_display_batch=5000):
         """
-        1. This method is for training procedure
-        2. Contain training loss and accuracy tracking on command line and tensorboard
+        1. This method is for trainer procedure
+        2. Contain trainer loss and accuracy tracking on command line and tensorboard
         :param model: pytorch model
-        :param trainloader: dataloader for training set
+        :param trainloader: dataloader for trainer set
         :param criterion: method for calculate loss
         :param optimizer: method for parameter optimizer
         :param epochs: how many epochs we would like to train
-        :param device: the training device, either cpu or gpu
+        :param device: the trainer device, either cpu or gpu
         :param loss_display_interval: the interval for display loss on command line
         :param tensorboardx_loss_display_interval: the interval for display loss on tensorboard
         :param accuracy_display_batch: the interval for display validation accuracy on tensorboard

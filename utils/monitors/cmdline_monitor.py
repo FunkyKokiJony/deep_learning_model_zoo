@@ -8,10 +8,16 @@ class CmdLineMonitor:
         self.callbacks = dict()
         self.tracking_stats = dict()
 
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.clear()
+
     def add_callbacks(self, cb):
         self.callbacks[cb.get_name()] = cb
 
-    def update(self, mode, idx, stats_dict):
+    def update(self, mode, idx, stats_dict=dict()):
         for _, callback in self.callbacks.items():
             callback(self, mode, idx, stats_dict)
 
@@ -21,12 +27,12 @@ class CmdLineMonitor:
 
         self.tracking_stats[stats_name][tag] = val
 
-    def display(self):
+    def display(self, title="=== Training Progress ==="):
         if (len(self.tracking_stats) == 0): return
 
         max_name_len = max(map(lambda k: len(k), self.tracking_stats.keys()))
 
-        tqdm.write("=== Training Progress ===")
+        tqdm.write(title)
 
         for name, stats in self.tracking_stats.items():
             if (len(stats) == 0):
@@ -41,6 +47,9 @@ class CmdLineMonitor:
 
         tqdm.write("")
         tqdm.write("")
+
+    def reset(self):
+        self.clear()
 
     def clear(self):
         self.tracking_stats.clear()

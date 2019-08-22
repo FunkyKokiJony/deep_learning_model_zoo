@@ -11,7 +11,13 @@ class AccuracyCallback(StatsCallback):
         self.correct = 0
         self.total = 0
 
-    def __call__(self, monitor, mode, idx, stats_dict):
+    def __call__(self, monitor, mode, idx, stats_dict=dict()):
+        if mode == MonitorMode.DISPLAY:
+            monitor.add_stats(idx, self.get_name(), MonitorMode.DISPLAY, "{:.4f}".format(self.correct / self.total))
+            self.correct = 0
+            self.total = 0
+            return
+
         _labels = stats_dict.get(AccuracyStats.LABELS)
         _predicts = stats_dict.get(AccuracyStats.PREDICTS)
 

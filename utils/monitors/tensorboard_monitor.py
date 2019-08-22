@@ -16,17 +16,18 @@ class TensorboardMonitor:
         self.cfg = Config()
         self.logdir = self.cfg.get(TensorboardConfig.SECTION
                                    , TensorboardConfig.LOGDIR)
+        self.writer = SummaryWriter(self.logdir + '/' + name + '_' + time.strftime('%Y%m%d%H%M%S', time.localtime()))
 
     def __enter__(self):
-        self.writer = SummaryWriter(self.logdir + time.strftime('%Y%m%d%H%M%S', time.localtime()))
+        pass
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.writer.close()
+        self.clear()
 
     def add_callbacks(self, cb):
         self.callbacks[cb.get_name()] = cb
 
-    def update(self, mode, idx, stats_dict):
+    def update(self, mode, idx, stats_dict=dict()):
         for _, callback in self.callbacks.items():
             callback(self, mode, idx, stats_dict)
 
@@ -36,7 +37,7 @@ class TensorboardMonitor:
 
         self.tracking_stats[stats_name][tag] = {"idx": idx, "val": val}
 
-    def display(self):
+    def display(self, title=None):
         if (len(self.tracking_stats) == 0): return
 
         for name, stats in self.tracking_stats.items():
@@ -44,14 +45,20 @@ class TensorboardMonitor:
                 continue
 
             for tag, pair in stats.items():
-                self.writer.add_scalar('_'.join([self.board_name, name, tag])
-                                       , float(pair["val"]), pair["idx"])
+                if title is not None:
+                    self.writer.add_scalar(title, float(pair["val"]), pair["idx"])
+                else:
+                    self.writer.add_scalar('_'.join([self.board_name, name, tag])
+                                           , float(pair["val"]), pair["idx"])
+    def flush(self):
+        self.writer.flush()
 
-    def clear(self):
+    def reset(self):
         self.tracking_stats.clear()
         self.writer.close()
         self.writer = SummaryWriter(self.logdir + time.strftime('%Y%m%d%H%M%S', time.localtime()))
 
-
-
+    def clear(self):
+        self.tracking_stats.clear()
+        self.writer.close()
 
