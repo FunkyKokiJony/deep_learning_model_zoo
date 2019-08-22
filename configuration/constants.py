@@ -13,6 +13,10 @@ class TensorboardConfig:
     SECTION = "tensorboard"
     LOGDIR = "logdir"
 
+class TrainingConfig:
+    SECTION = "training"
+    CHECKPOINT_DIR = "checkpoint_dir"
+
 class AccuracyStats:
     """
     This is the constants for AccuracyCallback
@@ -25,6 +29,7 @@ class MonitorMode:
     This is the constants for Monitor class
     """
     TRACK = "track"
+    DISPLAY = "display"
     EVAL = "eval"
 
 class LossStats:
