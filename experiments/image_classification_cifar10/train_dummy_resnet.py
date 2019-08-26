@@ -1,5 +1,5 @@
 """
-This module is for training and evaluation of DummyCNN on cifar10 dataset
+This module is for trainer and evaluation of DummyCNN on cifar10 dataset
 """
 import torch
 import torch.nn as nn
@@ -7,13 +7,13 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from models.dummynet import dummy_resnet
-from training.basic_training import BasicTraining
+from trainer.deprecation.basic_training import BasicTraining
 
 def perform_experiment():
     """
-    1. Load cifar10 dataset into training dataloader and test dataloader
+    1. Load cifar10 dataset into trainer dataloader and test dataloader
     2. Instantiate ResNet model and BasicTraining class
-    3. Start training and evaluation
+    3. Start trainer and evaluation
     """
     # transform PIL image from [0, 1] to [-1, 1]
     # the first tuple is the means for 3 different channels

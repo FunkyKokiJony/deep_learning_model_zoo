@@ -2,14 +2,16 @@
 This module is for using command ling and tensorboardx to track loss
 """
 import time
-from configuration import settings
-from tensorboardX import SummaryWriter
+
+from torch.utils.tensorboard import SummaryWriter
+
+from configuration import constants
 
 class LossMonitor:
     """
     This class is for using command ling and tensorboardx to track loss
     """
-    __LOG_ADDR = settings.RESOURCES_ADDR + '/log/'
+    __LOG_ADDR = constants.RESOURCES_ADDR + '/log/'
 
     def __init__(self):
         self.runningloss_commandline = 0
@@ -45,10 +47,10 @@ class LossMonitor:
         """
         1. Method for display loss on the command line
         2. It will output average loss every [interval] times
-        :param epoch: current epoch in training
+        :param epoch: current epoch in trainer
         :param idx: current idx in current epoch
-        :param loss: the loss numeric value in this training batch
-        :param dataloader: the dataloader we used in training
+        :param loss: the loss numeric value in this trainer batch
+        :param dataloader: the dataloader we used in trainer
         :param interval: loss display interval
         :param display: boolean determine if display loss using accumulate statistics
         """

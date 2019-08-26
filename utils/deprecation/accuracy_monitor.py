@@ -3,14 +3,16 @@ This module is for using command ling and tensorboardx to track accuracy
 """
 import time
 import torch
-from configuration import settings
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
+
+from configuration import constants
+
 
 class AccuracyMonitor:
     """
     This class is for use command ling and tensorboardx to track accuracy
     """
-    __LOG_ADDR = settings.RESOURCES_ADDR + '/log/'
+    __LOG_ADDR = constants.RESOURCES_ADDR + '/log/'
 
     def __init__(self):
         self.correct_commandline = 0
@@ -49,16 +51,16 @@ class AccuracyMonitor:
                                      , idx=0, dataloader=None, interval=0):
         """
         1. Method for display accuracy on command line
-        2. We can use it in training for accuracy check with tracking_mode=True
+        2. We can use it in trainer for accuracy check with tracking_mode=True
         3. We can also use it for test, display=False for accumulate number of correct
             display=True for output accuracy
         :param labels: labels in each batch, is a 1d tensor
         :param predicted: prediction in each batch, is a 1d tensor
         :param display: boolean for whether we display accuracy using existing statistics
-        :param tracking_mode: boolean for whether we track accuracy during training
-        :param epoch: the current epoch during training
+        :param tracking_mode: boolean for whether we track accuracy during trainer
+        :param epoch: the current epoch during trainer
         :param idx: the current idx in current epoch
-        :param dataloader: the dataloader we used in training
+        :param dataloader: the dataloader we used in trainer
         :param interval: determine display accuracy when idx reach the value of interval
         """
         self.correct_commandline += (predicted == labels).sum().item()
@@ -84,20 +86,20 @@ class AccuracyMonitor:
                                       , idx=0, dataloader=None, interval=0):
         """
         1. Method for display accuracy on tensorboardX
-        2. We can use it in training for accuracy check with tracking_mode=True
+        2. We can use it in trainer for accuracy check with tracking_mode=True
         3. We can also use it for test, display=False for accumulate number of correct
             display=True for output accuracy
-        4. When we use it in training, the output will be scalar in tensorboard
+        4. When we use it in trainer, the output will be scalar in tensorboard
             When we use it in test, the output will be text in tensorboard for the final accuracy
         5. The tag of the graph will be related to the tensorbardx_name set in init method
         6. The runs of this graph will be set in init method with current timestamp
         :param labels: labels in each batch, is a 1d tensor
         :param predicted: prediction in each batch, is a 1d tensor
         :param display: boolean for whether we display accuracy using existing statistics
-        :param tracking_mode: boolean for whether we track accuracy during training
-        :param epoch: the current epoch during training
+        :param tracking_mode: boolean for whether we track accuracy during trainer
+        :param epoch: the current epoch during trainer
         :param idx: the current idx in current epoch
-        :param dataloader: the dataloader we used in training
+        :param dataloader: the dataloader we used in trainer
         :param interval: determine display accuracy when idx reach the value of interval
         """
         self.correct_tensorboard += (predicted == labels).sum().item()
