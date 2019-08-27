@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 from pointnet2.models import Pointnet2ClsMSG as PointnetCls
 from pointnet2.models import Pointnet2SemMSG as PointnetSem
-from configuration import settings
+from configuration import constants
 
 def test_pointnetcls_forward():
     """
@@ -43,7 +43,7 @@ def test_pointnetcls_with_checkpoint_best():
     Check if the pretrained best checkpoint can be loaded
     """
     net = PointnetCls(input_channels=0, num_classes=40, use_xyz=True)
-    checkpoint_best_path = settings.RESOURCES_ADDR +\
+    checkpoint_best_path = constants.RESOURCES_ADDR +\
                            "/checkpoints/pointnet2_cls_best_modelnet40_pretrained.pth.tar"
     checkpoint_best = torch.load(checkpoint_best_path)
     net.load_state_dict(checkpoint_best["model_state"])
@@ -68,7 +68,7 @@ def test_pointnetcls_with_checkpoint_200():
     Check if the pretrained 200 epochs checkpoint can be loaded
     """
     net = PointnetCls(input_channels=0, num_classes=40, use_xyz=True)
-    checkpoint_200_path = settings.RESOURCES_ADDR +\
+    checkpoint_200_path = constants.RESOURCES_ADDR +\
                           "/checkpoints/pointnet2_cls_200_epoch_modelnet40_pretrained.pth.tar"
     checkpoint_200 = torch.load(checkpoint_200_path)
     net.load_state_dict(checkpoint_200["model_state"])

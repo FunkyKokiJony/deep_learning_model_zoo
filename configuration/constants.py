@@ -17,6 +17,11 @@ class TrainingConfig:
     SECTION = "training"
     CHECKPOINT_DIR = "checkpoint_dir"
 
+class DatasetConfig:
+    SECTION = "dataset"
+    PIX3D_DIR = "pix3d_dir"
+    MODELNET40_DIR = "modelnet40_dir"
+
 class AccuracyStats:
     """
     This is the constants for AccuracyCallback

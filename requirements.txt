@@ -2,3 +2,5 @@ torch>=1.1
 torchvision
 numpy
 pytest
+pandas
+pyntcloud
