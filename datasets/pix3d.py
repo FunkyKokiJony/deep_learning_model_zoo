@@ -2,6 +2,7 @@
 
 """
 from torch.utils.data import Dataset
+from torchvision.transforms import ToTensor, Resize
 
 from configuration.config import Config
 from configuration.constants import DatasetConfig
@@ -12,27 +13,27 @@ import re
 from pyntcloud import PyntCloud as pc
 import torch
 
-class LoadImg:
-    def __init__(self):
-        pass
+class LoadImgToResizeTensor:
+    def __init__(self, size):
+        self.size = size
 
     def __call__(self, row_dict):
         img_dir = row_dict[DatasetConfig.PIX3D_DIR] + "/" + row_dict["img"]
         with Image.open(img_dir) as img:
-            img_arr = np.fromstring(img.tobytes(), dtype=np.uint8)
-            row_dict["img"] = img_arr
+            #some image in data set has 4th channel, convert to RGB
+            rgb_img = img.convert("RGB")
+            row_dict["img"] = ToTensor()(Resize(self.size)(rgb_img))
 
         return row_dict
 
-class LoadMask:
-    def __init__(self):
-        pass
+class LoadMaskToResizeTensor:
+    def __init__(self, size):
+        self.size = size
 
     def __call__(self, row_dict):
         mask_dir = row_dict[DatasetConfig.PIX3D_DIR] + "/" + row_dict["mask"]
         with Image.open(mask_dir) as mask:
-            mask_arr = np.fromstring(mask.tobytes(), dtype=np.uint8)
-            row_dict["mask"] = mask_arr
+            row_dict["mask"] = ToTensor()(Resize(self.size)(mask))
 
         return row_dict
 
@@ -57,14 +58,14 @@ class LoadPointModel:
         row_dict["model"] = point_list
         return row_dict
 
-class ToTensor:
+class SplitDictToTensors:
     def __init__(self, input_channels=3):
         self.input_channels = input_channels
 
     def __call__(self, row_dict):
         points = torch.from_numpy(row_dict["model"][:, 0:self.input_channels])
-        img = torch.from_numpy(row_dict["img"])
-        mask = torch.from_numpy(row_dict["mask"])
+        img = row_dict["img"]
+        mask = row_dict["mask"]
         idx = row_dict["idx"]
         return img, mask, points, idx
 
@@ -94,6 +95,6 @@ class Pix3D(Dataset):
         row_dict[DatasetConfig.PIX3D_DIR] = self.pix3d_dir
         row_dict["idx"] = idx
         if self.transform is not None:
-            self.transform(row_dict)
+            return self.transform(row_dict)
 
         return row_dict

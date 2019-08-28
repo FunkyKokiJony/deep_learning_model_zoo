@@ -2,6 +2,7 @@
 
 """
 import h5py
+import torch
 from torch.utils.data import Dataset
 
 from configuration.config import Config
@@ -29,6 +30,7 @@ class ModelNet40(Dataset):
                                           , DatasetConfig.MODELNET40_DIR)
         self.train = train
         self.num_points = num_points
+        self.transform = transform
         if self.train:
             self.files = _get_data_files(os.path.join(self.modelnet40_dir, "train_files.txt"))
         else:
@@ -42,3 +44,18 @@ class ModelNet40(Dataset):
 
         self.points = np.concatenate(point_list, 0)
         self.labels = np.concatenate(label_list, 0)
+
+    def __getitem__(self, idx):
+        pt_idxs = np.arange(0, self.num_points)
+        np.random.shuffle(pt_idxs)
+
+        current_points = self.points[idx, pt_idxs].copy()
+        label = torch.from_numpy(self.labels[idx]).type(torch.LongTensor)
+
+        if self.transform is not None:
+            current_points = self.transform(current_points)
+
+        return current_points, label
+
+    def __len__(self):
+        return self.points.shape[0]
