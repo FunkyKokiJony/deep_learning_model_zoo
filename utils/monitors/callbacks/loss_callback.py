@@ -19,9 +19,12 @@ class LossCallback(StatsCallback):
             self.total = 0
             return
 
-        _loss = stats_dict.get(LossStats.LOSS).item()
+        _loss = stats_dict.get(LossStats.LOSS)
         if _loss is None:
             logging.error("Key [{}] is not set".format(LossStats.LOSS))
+            return
+
+        _loss = _loss.item()
 
         if mode == MonitorMode.TRACK:
             self.tracking_loss += _loss

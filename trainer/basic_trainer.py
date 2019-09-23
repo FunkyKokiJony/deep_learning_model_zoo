@@ -14,6 +14,13 @@ class BasicTrainer:
     def __init__(self):
         pass
 
+    def generate_stats(self, inputs, targets, outputs, loss):
+        _, predicted = torch.max(outputs, 1)
+        stats_dict = {AccuracyStats.LABELS: targets,
+                      AccuracyStats.PREDICTS: predicted,
+                      LossStats.LOSS: loss}
+        return stats_dict
+
     def train(self, model, trainloader, criterion, optimizer, epochs, device
               , monitors=dict(), checkpoint_name=None, checkpoint_interval=1000
               , tensorboard_eval_interval=10):
@@ -26,20 +33,17 @@ class BasicTrainer:
             for epoch in epoch_bar:
                 with tqdm.tqdm(trainloader, leave=False, desc="train") as idx_bar:
                     for data in idx_bar:
-                        inputs, labels = data[0].to(device), data[1].to(device)
+                        inputs, targets = data[0].to(device), data[1].to(device)
                         optimizer.zero_grad()
                         model.train()
                         outputs = model.forward(inputs)
-                        loss = criterion(outputs, labels)
+                        loss = criterion(outputs, targets)
                         loss.backward()
                         optimizer.step()
-                        _, predicted = torch.max(outputs, 1)
+
+                        stats_dict = self.generate_stats(inputs, targets, outputs, loss)
 
                         it += 1
-
-                        stats_dict = {AccuracyStats.LABELS: labels,
-                                  AccuracyStats.PREDICTS: predicted,
-                                  LossStats.LOSS: loss}
 
                         if checkpoint_name is not None and (it % checkpoint_interval) == 0 and it != 0:
                             checkpoint_handler.save_checkpoint(
@@ -63,7 +67,8 @@ class BasicTrainer:
                             monitors[CmdLineMonitor.__name__].display()
                             monitors[CmdLineMonitor.__name__].reset()
 
-        checkpoint_handler.save_checkpoint(checkpoint_name + "_" + str(epochs) + "_epochs")
+        if checkpoint_name is not None:
+            checkpoint_handler.save_checkpoint(checkpoint_name + "_" + str(epochs) + "_epochs")
 
     def eval(self, model, testloader, device, monitors):
         with torch.no_grad(), tqdm.tqdm(testloader, desc="test") as idx_bar:

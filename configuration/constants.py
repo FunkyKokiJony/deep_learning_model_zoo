@@ -42,3 +42,9 @@ class LossStats:
     This is the constants for LossCallback
     """
     LOSS = "loss"
+
+class ImgSampleStats:
+    """
+    This is the constants for ImgCallback
+    """
+    IMG_SAMPLES = "img_samples"
