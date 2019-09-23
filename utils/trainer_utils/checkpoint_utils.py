@@ -27,6 +27,9 @@ class CheckpointHandler:
             logging.info("Can not save optimizer stats")
 
     def save_checkpoint(self, filename="checkpoint", epoch=None, idx=None, loss=None):
+        if self.model is not None:
+            filename = filename + "_" + type(self.model).__name__
+
         filename = "{}/{}_{}.pth.tar".format(self.checkpoint_dir
                                              , filename
                                              , time.strftime('%Y%m%d%H%M%S', time.localtime()))
