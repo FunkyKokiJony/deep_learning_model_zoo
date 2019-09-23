@@ -37,6 +37,9 @@ class TensorboardMonitor:
 
         self.tracking_stats[stats_name][tag] = {"idx": idx, "val": val}
 
+    def add_img_samples(self, tag, img_tensors, global_step=None):
+        self.writer.add_images(tag, img_tensors, global_step)
+
     def display(self, title=None):
         if (len(self.tracking_stats) == 0): return
 
