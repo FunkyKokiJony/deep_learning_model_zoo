@@ -513,7 +513,7 @@ class AirTransformer2D(nn.Module):
             scope_seq = torch.unsqueeze(scopes, 1)
             mask_seq.append(masks)
 
-        return mask_seq
+        return torch.stack(mask_seq, dim=1)
 
 
 

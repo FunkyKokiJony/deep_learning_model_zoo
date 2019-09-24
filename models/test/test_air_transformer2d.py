@@ -21,9 +21,10 @@ def test_airtransformer2d():
     transformer = AirTransformer2D(4).cuda()
     imgs = torch.randn(2, 3, 256, 256).cuda()
     scopes = torch.ones(2, 1, 256, 256).cuda()
-    target = torch.randn(2, 8, 256, 256).cuda()
+    target = torch.randn(2, 4, 256, 256).cuda()
 
     masks = transformer(imgs, scopes)
+
     gpu_tracker.track()
 
     del transformer
